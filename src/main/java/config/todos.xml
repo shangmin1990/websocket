@@ -1,28 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/websocket
+        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
   <context:component-scan base-package="com.benjamin.todos.web"/>
 
-  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
-  <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+  <!--<mvc:annotation-driven />-->
+
+  <mvc:annotation-driven/>
+
+
+  <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean>
+
+  <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
     <property name="messageConverters">
-      <list>
-        <ref bean="jsonConverter"/>
-      </list>
+    <list>
+    <ref bean="jsonConverter"/>
+    </list>
     </property>
   </bean>
 
+
+
   <!-- JSON convert -->
-  <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+  <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
     <property name="supportedMediaTypes" value="application/json;charset=UTF-8"></property>
   </bean>
 
+  <!--<websocket:message-broker application-destination-prefix="/app">-->
+    <!--<websocket:stomp-endpoint path="/ws">-->
+      <!--&lt;!&ndash;<websocket:handshake-handler ref="myHandshake"/>&ndash;&gt;-->
+      <!--<websocket:sockjs/>-->
+    <!--</websocket:stomp-endpoint>-->
+    <!--<websocket:simple-broker prefix="/topic"/>-->
+  <!--</websocket:message-broker>-->
+
+  <websocket:handlers>
+    <websocket:mapping path="/websocket" handler="myHandler"/>
+    <websocket:mapping path="/regist" handler="myRegistHandler"/>
+  </websocket:handlers>
+  <bean id="myHandler" class="com.benjamin.todos.web.socket.MySocketHandler"></bean>
+  <bean id="myRegistHandler" class="com.benjamin.todos.web.socket.MyRegistHandler"></bean>
 </beans>

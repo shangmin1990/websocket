@@ -11,7 +11,7 @@ import java.sql.Statement;
 public class BaseDao {
   private static String username = "todo";
   private static String password = "benjamin";
-  private static String url = "jdbc:mysql://localhost:3306/todos";
+  private static String url = "jdbc:mysql://shmin.net:3306/todos";
 
   protected Connection getConnection() throws Exception{
     Class.forName("com.mysql.jdbc.Driver");
