@@ -33,6 +33,20 @@
       <param-value>classpath*:config/todos.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <!--
+    /**
+    * The main entry point for processing HTTP requests from SockJS clients.
+    *
+    * <p>In a Servlet 3+ container, {@link org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler}
+    * can be used to invoke this service. The processing servlet, as well as all filters involved,
+    * must have asynchronous support enabled through the ServletContext API or by adding an
+    * {@code <async-support>true</async-support>} element to servlet and filter declarations
+    * in web.xml.
+    *
+    * @author Rossen Stoyanchev
+    * @since 4.0
+    * @see org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler
+    */-->
     <async-supported>true</async-supported>
   </servlet>
 

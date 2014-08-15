@@ -37,17 +37,40 @@
     <property name="supportedMediaTypes" value="application/json;charset=UTF-8"></property>
   </bean>
 
+  <!-- Sockjs 与 stomp协议的支持 -->
+  <!-- SockJS为您提供了一个连贯的，跨浏览器的JavaScript API创建一个低延迟，全双工，浏览器和Web服务器之间的跨域通信通道 -->
+  <!-- 使用STOMP协议能够让我们站在WebSocket的肩膀上。它能够提供一种方法来解析一个消息应该传递给谁，我们又对接收什么样的消息感兴趣。(个人理解为channel的概念,消息信道)
+  如果只使用WebSocket 收到任何消息都会触发onmessage(服务器端handleMessage)回调,而大部分消息不是我们所期待的消息。stomp可以订阅一个地址(channel),只接受此地址的消息,或者往这个地址发送一个消息-->
+  <!-- 有了channel的概念 , 一个webscoket会话可以向不同channel发送(接收)消息,起到消息隔离的效果-->
+  <!-- webSocket协议是比较底层的协议,关心的是握手连接与消息传递, Stomp 定义了消息的格式 ,基于文本-->
+  <!-- Sockjs 是一个为了兼容各种浏览器出现的协议,如果浏览器不支持WebSocket协议,则Sockjs会对其进行降级处理,使用长轮询的方式执行推送 -->
+
+  <!--定义一个消息代理 -->
   <!--<websocket:message-broker application-destination-prefix="/app">-->
+    <!--&lt;!&ndash;定义一个端点 endpoint&ndash;&gt;-->
     <!--<websocket:stomp-endpoint path="/ws">-->
       <!--&lt;!&ndash;<websocket:handshake-handler ref="myHandshake"/>&ndash;&gt;-->
+      <!--&lt;!&ndash; 启用sockjs支持 &ndash;&gt;-->
       <!--<websocket:sockjs/>-->
     <!--</websocket:stomp-endpoint>-->
+    <!--&lt;!&ndash; 简单代理 channel必须以topic开头&ndash;&gt;-->
     <!--<websocket:simple-broker prefix="/topic"/>-->
   <!--</websocket:message-broker>-->
+
+  <!-- Websocket的配置 -->
+  <!-- 定义了客户端与服务器的握手过程 及数据传输(Class TextWebSocketHandler 与 BinarySocketHandler实现了WebSocketHandler),并没有channel的概念,需要手动实现广播功能 -->
+  <!-- WebSocketHandler接口中的handleMessage方法,客户端发送到服务器的数据会调用handleMessage方法 -->
+  <!-- 每一个连接都是一个WebSocketSession会话,通过WebSocketSession 的sendMessage功能可以实现主动推送 但只能在当前会话中推送数据-->
+  <!-- 广播消息 将所有链接到服务器的WebSocketSession 保存,需要广播的时候 遍历List OR Map 调用WebSocketSession的SendMessage 方法实现广播功能-->
+  <!-- 缺点: 浏览器如果不支持Socket协议则无法使用 (IE < 10)-->
+  <!-- 可以定义一个handshakeInterceptor 用来拦截建立链接的过程 -->
+  <!-- handshake-handler ？是干什么的 有待研究 -->
 
   <websocket:handlers>
     <websocket:mapping path="/websocket" handler="myHandler"/>
     <websocket:mapping path="/regist" handler="myRegistHandler"/>
+    <!-- 启用sockjs支持 -->
+      <websocket:sockjs/>
   </websocket:handlers>
   <bean id="myHandler" class="com.benjamin.todos.web.socket.MySocketHandler"></bean>
   <bean id="myRegistHandler" class="com.benjamin.todos.web.socket.MyRegistHandler"></bean>
