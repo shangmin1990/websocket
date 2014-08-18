@@ -7,7 +7,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Random;
 
@@ -17,28 +16,28 @@ import java.util.Random;
 @Controller
 public class SocketTestController {
 
-//  private TaskScheduler taskScheduler = new ConcurrentTaskScheduler();
-//
-//  private Random random = new Random();
-//
-//  @Autowired
-//  private SimpMessagingTemplate simpMessagingTemplate;
-//  @MessageMapping("/hello111")
-//  public void hello() throws Exception{
-//    System.out.println("Recive message");
-//    Thread.sleep(2000);
-//    simpMessagingTemplate.convertAndSend("/topic/test1","Send From backend");
-//  }
-//
-//  @MessageMapping("/hello222")
-//  @SendTo("topic/test2")
-//  public String hello2() throws Exception{
-//    System.out.println("hello2222 message");
-//    Thread.sleep(2000);
-////    simpMessagingTemplate.convertAndSend("/topic/test2","Send From backend");
-//    return "This is message 2";
-//  }
-//
+  private TaskScheduler taskScheduler = new ConcurrentTaskScheduler();
+
+  private Random random = new Random();
+
+  @Autowired
+  private SimpMessagingTemplate simpMessagingTemplate;
+  @MessageMapping("/hello111")
+  public void hello() throws Exception{
+    System.out.println("Recive message");
+    Thread.sleep(2000);
+    simpMessagingTemplate.convertAndSend("/topic/test1","Send From backend");
+  }
+
+  @MessageMapping("/hello222")
+  @SendTo("topic/test2")
+  public String hello2() throws Exception{
+    System.out.println("hello2222 message");
+    Thread.sleep(2000);
+//    simpMessagingTemplate.convertAndSend("/topic/test2","Send From backend");
+    return "This is message 2";
+  }
+
 //  @MessageMapping("/start")
 //  public void test3(){
 //    taskScheduler.scheduleAtFixedRate(new Runnable() {
