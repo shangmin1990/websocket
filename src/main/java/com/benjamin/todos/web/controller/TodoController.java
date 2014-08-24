@@ -19,7 +19,7 @@ public class TodoController {
   public @ResponseBody List<Todo> findAll(){
     return todoImpl.getAllTodos();
   }
-  @RequestMapping(value="/todo",method = RequestMethod.PUT)
+  @RequestMapping(value="/todo",method = RequestMethod.POST)
   @ResponseBody
   public boolean addTodo(@RequestBody Todo todo){
     return todoImpl.addTodo(todo);

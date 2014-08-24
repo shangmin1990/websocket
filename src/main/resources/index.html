@@ -1,0 +1,74 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Web Socket Demo</title>
+<style>
+div.message{
+height:300px;
+width:100%;
+}
+</style>
+</head>
+<body>
+<div>Status : <span></span></div>
+<button>
+点对点发送
+</button>
+<button>
+广播消息
+</button>
+
+<div id='point' class="message">
+</div>
+<div id='bordercast' class="message">
+</div>
+<script src='sockjs.js'></script>
+<script src='stomp.js'></script>
+<script>
+var websocket = new SockJS('http://localhost:8080/todo/websocket');
+var client = Stomp.over(websocket);
+var $ = function(selector){
+if(selector.indexOf('#') == 0){
+return document.getElementById(selector.substring(1));
+}
+return document.getElementsByTagName(selector);
+}
+window.onload = function(){
+client.connect('benjamin','benjamin',function(msg){
+
+$('span')[0].innerText = 'Connected';
+
+  $('button')[0].onclick = function(){
+    client.subscribe('/app/subscribe',function(msg){
+  var div = document.createElement('div');
+  div.innerText = msg.body;  
+  $('#point').appendChild(div);
+});
+}
+
+  $('button')[1].onclick = function(){
+    client.send('/app/string',{},"NB");
+  }
+
+client.subscribe('/topic/string',function(msg){
+  var div = document.createElement('div');
+  div.innerText = msg.body;  
+  $('#bordercast').appendChild(div);
+});
+
+/*var sub = client.subscribe('/app/subscribe',function(msg){
+  var div = document.createElement('div');
+  div.innerText = msg.body;  
+  document.body.appendChild(div);
+});*/
+},function(error){
+  console.log(error)
+});
+
+}
+window.onunload = function(){ 
+  client.disconnect();
+}
+</script>
+</body>
+</html>
