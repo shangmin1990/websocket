@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.support.MessageHeaderAccessor;
@@ -14,7 +12,6 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Controller;
 
-import java.nio.charset.Charset;
 import java.util.Random;
 
 /**
@@ -33,7 +30,8 @@ public class SocketTestController {
   public void hello(Todo todo) throws Exception{
     System.out.println("Recive message");
     Thread.sleep(2000);
-    simpMessagingTemplate.convertAndSend("/topic/test1","Send From backend");
+    simpMessagingTemplate.convertAndSend("/topic/fuckyou","Send From backend");
+//    return "hello111 backend";
   }
 
   @MessageMapping("/{destination}")

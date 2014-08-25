@@ -46,14 +46,21 @@
   <!-- Sockjs 是一个为了兼容各种浏览器出现的协议,如果浏览器不支持WebSocket协议,则Sockjs会对其进行降级处理,使用长轮询的方式执行推送 -->
 
   <!--定义一个消息代理-->
-  <websocket:message-broker application-destination-prefix="/app" user-destination-prefix="/user">
-    <!--定义一个端点 endpoint-->
+  <!-- /topic/abc/def/ 默认的分割符 / org.springframework.util.AntPathMatcher-->
+  <!-- 修改分割符号,加入 path-matcher-->
+  <!--??? 没有path-matcher 属性??? 版本问题?-->
+  <!-- application-destination-prefix 客户端消息发送频道前缀 -->
+  <websocket:message-broker application-destination-prefix="/app">
+    <!--web socket 传输设置 -->
+    <!-- message-size=128*1024, send-buffer-size=1024*1024 -->
+    <websocket:transport message-size="131072" send-timeout="25000" send-buffer-size="1048576" />
+    <!--定义一个端点 endpoint 可以定义多个-->
     <websocket:stomp-endpoint path="/websocket">
       <!--<websocket:handshake-handler ref="myHandshake"/>-->
       <!-- 启用sockjs支持 -->
       <websocket:sockjs/>
     </websocket:stomp-endpoint>
-    <!-- 简单代理 channel必须以topic开头-->
+    <!--server端返回消息 channel必须以topic开头-->
     <websocket:simple-broker prefix="/topic"/>
   </websocket:message-broker>
 
@@ -74,4 +81,8 @@
   <!--</websocket:handlers>-->
   <!--<bean id="myHandler" class="com.benjamin.todos.web.socket.MySocketHandler"></bean>-->
   <!--<bean id="myRegistHandler" class="com.benjamin.todos.web.socket.MyRegistHandler"></bean>-->
+
+  <bean id="pathMatcher" class="org.springframework.util.AntPathMatcher">
+    <property name="pathSeparator" value="." />
+  </bean>
 </beans>
