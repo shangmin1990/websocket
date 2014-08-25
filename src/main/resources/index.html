@@ -1,74 +1,157 @@
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Web Socket Demo</title>
-<style>
-div.message{
-height:300px;
-width:100%;
-}
-</style>
+    <meta charset="utf-8"/>
+    <title>Realtime Web App</title>
 </head>
+<style>
+    .box {
+        background-color: #F0F0F0;
+        border: 4px solid green;
+        width: 400px;
+        height: 300px;
+    }
+
+    .innerbox {
+        overflow: auto;
+        border: 3px solid green;
+        border-left: 0px;
+        border-right: 0px;
+    }
+
+    body {
+        background-color: #F0F0F0;
+    }
+</style>
+
 <body>
-<div>Status : <span></span></div>
-<button>
-点对点发送
-</button>
-<button>
-广播消息
-</button>
+<div >
+    <label>Server: </label>
+    <input type="text" id="server" placeholder="http://host:port/channel" style="width: 250px" />
+    <input type="button" id="connectButton" value="Connect"/>
+</div>
 
-<div id='point' class="message">
+<div id="status" class="box" style="position:absolute;left:0px;top:40px">
+    <input type="button" id="closeButton" value="Close connection"/><br>
+    Connection Status:&nbsp;
+    <div id="status_info">Not connected</div>
 </div>
-<div id='bordercast' class="message">
+
+<div id="subscribe" class="box" style="position:absolute;left:450px;top:40px">
+
+    <form onsubmit="return false;">
+        Topic:<input type="text" id="subscribeTopic" value="sometopic"/>
+        <input type="button" id="subscribeButton" value="Subscribe"/>
+    </form>
+    Subscriptions:
+    <div id="subscribed" class="innerbox" style="width: 400px; height: 255px;">
+    </div>
 </div>
-<script src='sockjs.js'></script>
-<script src='stomp.js'></script>
+
+<div id="send" class="box" style="position:absolute;left:0px;top:350px">
+
+    <form onsubmit="return false;">
+        Topic:<input type="text" id="sendTopic" value="sometopic"/><br>
+        Message:<input type="text" id="sendMessage" value="Hello, World!"/>
+        <input type="button" id="sendButton" value="Send message"/>
+    </form>
+
+    Sent messages:<br>
+    <div id="sent" class="innerbox" style="width: 400px; height: 215px;">
+    </div>
+</div>
+<br>
+
+<div id="receive" class="box" style="position:absolute;left:450px;top:350px">
+
+    Received messages:<br>
+
+    <div id="received" class="innerbox" style="width: 400px; height: 280px;">
+    </div>
+</div>
+
+<script src="sockjs.js"></script>
+<script src="stomp.js"></script>
+<script src="jquery-2.1.1.min.js"></script>
 <script>
-var websocket = new SockJS('http://localhost:8080/todo/websocket');
-var client = Stomp.over(websocket);
-var $ = function(selector){
-if(selector.indexOf('#') == 0){
-return document.getElementById(selector.substring(1));
-}
-return document.getElementsByTagName(selector);
-}
-window.onload = function(){
-client.connect('benjamin','benjamin',function(msg){
 
-$('span')[0].innerText = 'Connected';
+    var client = null;
 
-  $('button')[0].onclick = function(){
-    client.subscribe('/app/subscribe',function(msg){
-  var div = document.createElement('div');
-  div.innerText = msg.body;  
-  $('#point').appendChild(div);
-});
-}
+    function publish(topic,  message) {
+        if (client) {
+            var json = {text: message};
+            client.send('/app/'+topic,{}, JSON.stringify(json));
+            /*client.send(topic, json, function(message) {
+             message.reply({end: "reply"});
+             });*/
+            $('#sent').append($("<code>").text("Topic:" + topic + " Message:" + JSON.stringify(json)));
+            $('#sent').append($("</code><br>"));
+        }
+    }
 
-  $('button')[1].onclick = function(){
-    client.send('/app/string',{},"NB");
-  }
+    function subscribe(topic) {
+        if (client) {
+            window.registration = client.subscribe('/topic/'+topic, function(message) {
+                window.message = message;
+                $('#received').append("Topic:" + topic + " Message:" + JSON.stringify(message.body) + "<br>");
+                var f = function(message) {
+                    console.log(JSON.stringify(message.body()));
+                };
+//                message.reply({a:"b"}, f);
+            });
+            $('#subscribed').append($("<code>").text("Topic:" + topic));
+            $('#subscribed').append($("</code><br>"));
 
-client.subscribe('/topic/string',function(msg){
-  var div = document.createElement('div');
-  div.innerText = msg.body;  
-  $('#bordercast').appendChild(div);
-});
+            // You can unsubscribe the topic like this:
+            // registration.unregister();
+        }
+    }
 
-/*var sub = client.subscribe('/app/subscribe',function(msg){
-  var div = document.createElement('div');
-  div.innerText = msg.body;  
-  document.body.appendChild(div);
-});*/
-},function(error){
-  console.log(error)
-});
+    function closeConn() {
+        if (client) {
+            client.close();
+            client = null;
+        }
+    }
 
-}
-window.onunload = function(){ 
-  client.disconnect();
-}
+    function openConn() {
+        var server = $('#server').val();
+        window.location.hash = '#server='+ server;
+        if (!client) {
+            var options = {debug:true, forkLocal:true};
+            var ws = new SockJS(server);
+            client = Stomp.over(ws);
+        }
+        client.connect('benjamin','benjamin',function(msg){
+            $("#status_info").text("Connected");
+            console.log("Opened at: " + new Date().toString());
+        },function(error){
+            console.log("Error at: " + error);
+        });
+    }
+
+    $(document).ready(function() {
+        var server = "https://http://localhost:8080/todo/websocket";
+        var hash = window.location.hash;
+        if (hash) {
+            server = hash.substring(hash.indexOf('=') + 1);
+        }
+        $('#server').val(server);
+        $("#sendButton").click(function() {
+            publish($("#sendTopic").val(), $("#sendMessage").val());
+        });
+
+        $("#subscribeButton").click(function() {
+            subscribe($("#subscribeTopic").val());
+        });
+
+        $("#closeButton").click(function() {
+            closeConn();
+        });
+
+        $("#connectButton").click(function() {
+            openConn();
+        });
+    });
 </script>
 </body>
 </html>

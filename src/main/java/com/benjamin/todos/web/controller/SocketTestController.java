@@ -3,6 +3,7 @@ package com.benjamin.todos.web.controller;
 import com.benjamin.todos.entity.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -33,6 +34,16 @@ public class SocketTestController {
     System.out.println("Recive message");
     Thread.sleep(2000);
     simpMessagingTemplate.convertAndSend("/topic/test1","Send From backend");
+  }
+
+  @MessageMapping("/{destination}")
+//  @SendTo("/topic/sometopic")
+  public void sendToClient(Message message,@DestinationVariable String destination) throws Exception{
+    System.out.println("Recive message");
+//    Thread.sleep(2000);
+    String text = new String((byte[]) message.getPayload());
+    simpMessagingTemplate.convertAndSend("/topic/"+destination,text);
+//    return text;
   }
 
   @MessageMapping("/string")
