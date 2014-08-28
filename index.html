@@ -108,7 +108,7 @@
 
     function closeConn() {
         if (client) {
-            client.close();
+            client.disconnect();
             client = null;
         }
     }
@@ -152,6 +152,13 @@
             openConn();
         });
     });
+  function release(){
+    registration.unsubscribe();
+    client.disconnect();
+  }
+  window.onunload = function(){
+    release();
+  }
 </script>
 </body>
 </html>
