@@ -58,14 +58,16 @@ public class SocketTestController {
     return "This is message 2";
   }
 
-  @SubscribeMapping("subscribe")
+  @SubscribeMapping("/{path}")
   /**
    * client.subscribe(xxx) 前缀为 application-destination-prefix
    * request-reply 模式,
    */
-  public String subscribeTest(MessageHeaderAccessor messageHeaderAccessor){
-    messageHeaderAccessor.getReplyChannel();
-    return "Subscribe";
+  public String subscribeTest(@DestinationVariable String path,Message message){
+    System.out.println(message.getPayload().getClass());
+    String test = new String((byte[]) message.getPayload());
+//    simpMessagingTemplate.convertAndSend("/topic/test2","Send From backend");
+    return test+"--- From backend";
   }
 
 //  @MessageMapping("/start")

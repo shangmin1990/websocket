@@ -8,9 +8,13 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/websocket
-       http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+       http://www.springframework.org/schema/websocket/spring-websocket.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd">
 
   <context:property-placeholder location="classpath*:config/jdbc.properties"/>
+
+  <!-- spring sercurity -->
 
   <!--<websocket:message-broker application-destination-prefix="/test">-->
     <!--<websocket:stomp-endpoint path="/endpoint">-->
@@ -36,4 +40,20 @@
   <!--</websocket:handlers>-->
 
   <!--<bean id="myHandler" class="com.benjamin.todos.web.socket.BaseSocket"></bean>-->
+
+  <!-- Define some example users and admins who have role based access to
+  the application. In a real world scenario this would be linked with a user
+  credentials database or a custom authentication provider. Some examples:
+  1) http://krams915.blogspot.in/2012/01/spring-security-31-implement_1244.html
+  2) http://krams915.blogspot.in/2010/12/spring-security-mvc-integration-using_26.html -->
+
+  <!--<authentication-manager>-->
+    <!--<authentication-provider>-->
+      <!--<user-service>-->
+        <!--<user name="john" password="doe" authorities="ROLE_USER" />-->
+        <!--<user name="sunit" password="katkar" authorities="ROLE_USER" />-->
+        <!--<user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMIN" />-->
+      <!--</user-service>-->
+    <!--</authentication-provider>-->
+  <!--</authentication-manager>-->
 </beans>

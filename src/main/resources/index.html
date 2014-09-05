@@ -50,7 +50,11 @@
 <div id="send" class="box" style="position:absolute;left:0px;top:350px">
 
     <form onsubmit="return false;">
-        Topic:<input type="text" id="sendTopic" value="sometopic"/><br>
+        Topic:<input type="text" id="sendTopic" value="sometopic"/>
+      <select>
+        <option value="1" selected>广播消息</option>
+        <option value="2">点对点消息</option>
+      </select><br>
         Message:<input type="text" id="sendMessage" value="Hello, World!"/>
         <input type="button" id="sendButton" value="Send message"/>
     </form>
@@ -76,13 +80,28 @@
 
     var client = null;
 
+    function getSelectedValue(){
+      var select = $("select");
+      return select.val();
+    }
     function publish(topic,  message) {
         if (client) {
             var json = {text: message};
-            client.send('/app/'+topic,{}, JSON.stringify(json));
-            /*client.send(topic, json, function(message) {
-             message.reply({end: "reply"});
-             });*/
+            var value = getSelectedValue();
+            if(value == 1){
+              client.send('/app/'+topic,{}, JSON.stringify(json));
+              /*client.send(topic, json, function(message) {
+               message.reply({end: "reply"});
+               });*/
+            }else{
+              client.subscribe("/app/"+topic,function(msg){
+                var message = msg.body;
+                $('#received').append("Topic:" + topic + " Message:" + JSON.stringify(message) + "<br>");
+                $('#subscribed').append($("<code>").text("Topic:" + topic));
+                $('#subscribed').append($("</code><br>"));
+              })
+            }
+
             $('#sent').append($("<code>").text("Topic:" + topic + " Message:" + JSON.stringify(json)));
             $('#sent').append($("</code><br>"));
         }
