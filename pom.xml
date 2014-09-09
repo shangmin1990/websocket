@@ -83,6 +83,12 @@
           <include>**/*.properties</include>
         </includes>
       </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>*</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <!-- compiler level 1.7-->
@@ -99,7 +105,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <webXml>src\main\resources\WEB-INF\web.xml</webXml>
+          <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
         </configuration>
       </plugin>
     </plugins>

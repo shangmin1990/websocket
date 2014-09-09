@@ -85,4 +85,5 @@
   <bean id="pathMatcher" class="org.springframework.util.AntPathMatcher">
     <property name="pathSeparator" value="." />
   </bean>
+  <mvc:default-servlet-handler/>
 </beans>
