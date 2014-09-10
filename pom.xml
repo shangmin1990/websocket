@@ -64,6 +64,13 @@
       <version>3.1.0</version>
     </dependency>
 
+    <!-- websocket api -->
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+    </dependency>
+
     <!-- My oAuth Test -->
     <dependency>
       <groupId>com.benjamin</groupId>
