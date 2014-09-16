@@ -8,7 +8,7 @@ import com.benjamin.oauth2.authorization.PasswordValidator;
 public class MyOauth2Login implements PasswordValidator {
   @Override
   public boolean validPassword(String username, String password) {
-    if(username!=null && password !=null && username.equals("a") && password.equals("a")){
+    if(username!=null && password !=null && username.equals("test") && password.equals("test")){
       return true;
     }else {
       return false;

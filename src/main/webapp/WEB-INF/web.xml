@@ -62,7 +62,7 @@
   
   <servlet-mapping>
     <servlet-name>oauth2servlet</servlet-name>
-    <url-pattern>/login</url-pattern>
+    <url-pattern>/oauth2/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -84,7 +84,7 @@
 
   <filter-mapping>
     <filter-name>oauth2</filter-name>
-    <url-pattern>/oauth2/*</url-pattern>
+    <url-pattern>/api/*</url-pattern>
   </filter-mapping>
   <filter>
     <filter-name>encoding</filter-name>

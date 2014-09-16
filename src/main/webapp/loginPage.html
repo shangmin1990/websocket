@@ -4,10 +4,10 @@
   <title>Oauth2.0</title>
 </head>
 <body>
-<form METHOD="post" action="login">
+<form METHOD="post" action="oauth2/authorize">
   <input type="text" id="username" name="username" placeholder="username"/>
   <input type="password" id="password" name="password" placeholder="Password"/>
-  <input type="hidden" name="grant_type" value="password">
+  <input type="hidden" name="response_type" value="code">
   <input type="submit" value="submit"/>
 </form>
 
