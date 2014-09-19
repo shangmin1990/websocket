@@ -64,12 +64,18 @@
       <version>3.1.0</version>
     </dependency>
 
+    <!-- when I add this dependency server throw an exception SEVERE: Transport error for SockJsSession[id=p90wedxs, state=NEW, sinceCreated=1, sinceLastActive=1]
+java.lang.ClassCastException: org.apache.tomcat.websocket.server.WsServerContainer cannot be cast to javax.websocket.server.ServerContainer
+    -->
+    <!-- overflow answer -->
+    <!-- The "javax.websocket-api" dependency may be the issue. It is already included in the server lib so you at least make it scope "provided" or try removing it, there is a good chance you don't need it in the application pom.-->
+    <!-- http://stackoverflow.com/questions/23530654/websockets-with-tomcat-8-and-spring-4-classcastexception-before-handler-is-invok -->
     <!-- websocket api -->
-    <dependency>
-      <groupId>javax.websocket</groupId>
-      <artifactId>javax.websocket-api</artifactId>
-      <version>1.1</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>javax.websocket</groupId>-->
+      <!--<artifactId>javax.websocket-api</artifactId>-->
+      <!--<version>1.1</version>-->
+    <!--</dependency>-->
 
     <!-- My oAuth Test -->
     <dependency>
